@@ -32,7 +32,7 @@ def install_with_pip(packages):
 def detect(setting):
     """ Detects a setting in tags, falls back to environment variables """
     import os
-    if resource_tags() is not None setting in resource_tags():
+    if resource_tags() is not None and setting in resource_tags():
         return resource_tags()[setting]
     else:
         return os.getenv(shell_style(setting))
