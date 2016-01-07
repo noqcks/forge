@@ -108,7 +108,7 @@ def applicable_playbooks():
     """ Returns a list of playbooks that should be applied to this system """
     playbooks = ['']                  # Base Playbook
     playbooks.append(project_path())  # Project Playbook
-    playbooks.extend(role_paths())    # System Roles
+    playbooks.append(role_paths())    # System Roles
     return sorted(unique(playbooks), key=len)
 
 
