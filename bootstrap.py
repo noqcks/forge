@@ -57,12 +57,15 @@ def download_from_s3(source, destination):
 
 def instance_metadata(item):
     """ Returns information about the current instance from EC2 Instace API """
-    import httplib
-    api = httplib.HTTPConnection('169.254.169.254')
-    api.request('GET', '/latest/meta-data/' + item)
-    metadata = api.getresponse().read()
-    api.close()
-    return metadata
+    try:
+        import httplib
+        api = httplib.HTTPConnection('169.254.169.254')
+        api.request('GET', '/latest/meta-data/' + item)
+        metadata = api.getresponse().read()
+        api.close()
+        return metadata
+    except:
+        pass
 
 
 def instance_id():
@@ -77,10 +80,13 @@ def region():
 
 def resource_tags():
     """ Returns a dictionary of all resource tags for the current instance """
-    import boto.ec2
-    api = boto.ec2.connect_to_region(region())
-    tags = api.get_all_tags(filters={'resource-id': instance_id()})
-    return {tag.name: tag.value for tag in tags}
+    try:
+        import boto.ec2
+        api = boto.ec2.connect_to_region(region())
+        tags = api.get_all_tags(filters={'resource-id': instance_id()})
+        return {tag.name: tag.value for tag in tags}
+    except:
+        pass
 
 
 def security_groups():
