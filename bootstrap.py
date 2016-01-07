@@ -164,9 +164,9 @@ def configure_environment():
     """ Exposes information from Resource Tags in Ansible vars """
     get_vault('')
     with open('/etc/ansible/group_vars/local.yml', 'w+') as stream:
-        stream.write("\nproject: " + resource_tags()['Project'])
-        stream.write("\nenvironment_tier: " + resource_tags()['Environment'])
-        stream.write("\nsystem_role: " + resource_tags()['Role'])
+        stream.write("\nproject: " + detect('Project'))
+        stream.write("\nenvironment_tier: " + detect('Environment'))
+        stream.write("\nsystem_role: " + detect('Role'))
 
 
 def record_exit(playbook, exit_status):
