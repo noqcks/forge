@@ -59,7 +59,7 @@ def instance_metadata(item):
     """ Returns information about the current instance from EC2 Instace API """
     try:
         import httplib
-        api = httplib.HTTPConnection('169.254.169.254')
+        api = httplib.HTTPConnection('169.254.169.254', timeout=10)
         api.request('GET', '/latest/meta-data/' + item)
         metadata = api.getresponse().read()
         api.close()
