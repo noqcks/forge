@@ -89,39 +89,14 @@ def resource_tags():
         pass
 
 
-def security_groups():
-    """ Returns a list of sercurity groups for the current instance """
-    return instance_metadata('security-groups').split('\n')
-
-
-def infer_tags(security_group):
-    """ Attempts to infer tags from a security group name """
-    import re
-    matches = re.search(r'(?P<Project>[\w-]+)-(?P<Role>\w+)$', security_group)
-    return matches.groupdict()
-
-
-def implicit_tags():
-    """ Returns a list of tags inferred from security groups """
-    return [infer_tags(name) for name in security_groups()]
-
-
-def discover(trait):
-    """ Tries to find a trait in tags, makes a reasonable guess if it fails """
-    if trait in resource_tags():
-        return [resource_tags()[trait]]
-    else:
-        return [implicit_tags()[trait]]
-
-
 def project_path():
     """ Returns the forge path for the discovered project """
-    return discover('Project')[0] + '/'
+    return detect('Project') + '/'
 
 
 def role_paths():
     """ Returns a list of forge paths for all discovered roles """
-    return [project_path() + role + '/' for role in discover('Role')]
+    return project_path() + detect('Role') + '/'
 
 
 def unique(enumerable):
@@ -160,6 +135,7 @@ def get_vault(playbook):
     with open('/etc/ansible/hosts', 'a') as stream:
         stream.writelines(["\n[" + vault_name + "]\n", 'localhost\n'])
 
+
 def configure_environment():
     """ Exposes information from Resource Tags in Ansible vars """
     get_vault('')
@@ -184,6 +160,7 @@ def execute(playbook):
         download_from_s3(playbook + filename, path + filename)
         exit_status = call('ansible-playbook ' + path + filename, shell=True)
         record_exit(playbook, exit_status)
+
 
 def ssh_keyscan(host):
     """ Get the SSH host key from a remote server by connecting to it """
